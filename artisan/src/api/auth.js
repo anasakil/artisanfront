@@ -1,1 +1,0 @@
-// Placeholder content for src/api/auth.js
