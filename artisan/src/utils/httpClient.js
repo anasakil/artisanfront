@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const httpClient = axios.create({
-  baseURL: 'https://artisan-xqtv.onrender.com/', // Your API base URL here
+  baseURL: 'https://http://localhost:3001/', // Your API base URL here
 });
 
 httpClient.interceptors.request.use(config => {

@@ -1,40 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import  store  from './app/store';
-// Removed unused PrivateRoute import
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import Login from './components/auth/Login';
 import AdminDashboard from './components/admin/AdminDashboard';
 import UserManagement from './components/admin/UserManagement';
-import Login from './components/auth/Login';
-import { isAuthenticated } from './utils/auth';
+import CategoryManagement from './components/admin/CategoryManagement';
+import Register from './components/auth/Register';
+import MoroccoMap from './Map/MoroccoMap';
+import ProductsPage from './Map/productspage';
+// import Layout from './components/admin/Layout';
 
-function App() {
-  const [authChecked, setAuthChecked] = useState(false);
-
-  useEffect(() => {
-    setAuthChecked(isAuthenticated());
-  }, []);
-
+const App = () => {
   return (
-    <Provider store={store}>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route 
-            path="/AdminDashboard" 
-            element={
-              authChecked ? <AdminDashboard /> : <Navigate to="/login" replace />
-            } 
-          />
-            <Route 
-              path="/admin/users" 
-              element={isAuthenticated ? <UserManagement /> : <Navigate to="/login" replace />}
-            />
-          <Route path="/" element={authChecked ? <Navigate to="/AdminDashboard" replace /> : <Navigate to="/login" replace />} />
-        </Routes>
-      </Router>
-    </Provider>
+    <BrowserRouter>
+      <Routes>
+                <Route path="/map" element={<MoroccoMap />} />
+                <Route path="/products/:region" element={<ProductsPage />} />
+
+
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        {/* <Route element={<Layout />}> */}
+
+        <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+          <Route path="/adminDashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/categories" element={<CategoryManagement />} />
+        </Route>
+        {/* </Route> */}
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;

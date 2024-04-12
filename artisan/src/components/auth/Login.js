@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import GoogleLoginButton from './GoogleLoginButton';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -9,6 +11,10 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { status, error } = useSelector((state) => state.auth);
+  useEffect(()=>{
+    document.title = "Login";
+  }
+    ,[] )
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,6 +45,8 @@ const Login = () => {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
         <button type="submit">Login</button>
       </form>
+      <GoogleLoginButton />
+
     </div>
   );
 };

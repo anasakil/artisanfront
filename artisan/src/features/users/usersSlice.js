@@ -6,28 +6,59 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   return response.data;
 });
 
+
+export const updateUser = createAsyncThunk('users/updateUser', async ({ id, user }) => {
+  const response = await usersAPI.updateUserInAPI({ id, user });
+  return response.data;
+});
+
+export const deleteUser = createAsyncThunk('users/deleteUser', async (userId) => {
+  await usersAPI.deleteUserFromAPI(userId);
+  return userId;
+});
+
+export const createUser = createAsyncThunk('users/createUser', async (newUser) => {
+  const response = await usersAPI.createUserInAPI(newUser);
+  return response.data;
+});
+
 const usersSlice = createSlice({
   name: 'users',
   initialState: {
     users: [],
     loading: false,
-    error: null
+    error: null,
   },
-  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchUsers.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.loading = false;
-      state.users = action.payload;
-    });
-    builder.addCase(fetchUsers.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message;
-    });
+    builder
+      .addCase(fetchUsers.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.users.findIndex(user => user._id === action.payload._id);
+        if(index !== -1) {
+          state.users[index] = action.payload;
+        }
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = state.users.filter(user => user._id !== action.payload);
+      })
+      .addCase(createUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users.push(action.payload);
+      });
   },
 });
 
-export const usersSelector = (state) => state.users;
+export const usersSelector = state => state.users;
 export default usersSlice.reducer;

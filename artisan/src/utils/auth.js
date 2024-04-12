@@ -13,11 +13,16 @@ export const clearToken = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('role');
 };
-// src/utils/auth.js
 
 export const isAuthenticated = () => {
-  return !!localStorage.getItem('token');
+  const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
+  return token && role;
 };
+
+export function isAdmin(user) {
+  return user && user.role === 'admin';
+}
 
 
 export const getUserRole = () => {
@@ -28,6 +33,11 @@ export const saveUserRole = (role) => {
   localStorage.setItem('role', role);
 };
 
+
+export const saveUsername = (username) => {
+  localStorage.setItem('name', username);
+};
+
 export const getUserDetails = () => {
   const token = getToken();
   return token ? jwtDecode(token) : null;
@@ -35,5 +45,9 @@ export const getUserDetails = () => {
 
 
 export const clearUserRole = () => {
+  localStorage.removeItem('role');
+};
+export const logout = () => {
+  localStorage.removeItem('token');
   localStorage.removeItem('role');
 };
