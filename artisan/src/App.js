@@ -9,6 +9,7 @@ import Register from './components/auth/Register';
 import MoroccoMap from './Map/MoroccoMap';
 import ProductsPage from './Map/productspage';
 import Home from './pages/Home';
+import Contact from './pages/Contact';
 // import Layout from './components/admin/Layout';
 
 const App = () => {
@@ -21,6 +22,9 @@ const App = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/contact" element={<Contact />} />
+        
+
         {/* <Route element={<Layout />}> */}
 
         <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
