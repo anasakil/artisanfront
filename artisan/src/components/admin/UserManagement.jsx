@@ -1,132 +1,127 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUsers, updateUser, deleteUser, createUser, usersSelector } from '../../features/users/usersSlice';
+import { fetchUsers, updateUser, deleteUser, usersSelector } from '../../features/users/usersSlice';
+import { Layout, Button, Table, Input, Modal, Form, Pagination, message , Popconfirm ,Tag} from 'antd';
+import Sidebar from './Sidebar';  
+const { Content, Footer } = Layout;
 
 const UserManagement = () => {
   const dispatch = useDispatch();
-  const { users, loading, error } = useSelector(usersSelector);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [userToUpdate, setUserToUpdate] = useState(null);
-  const [newUser, setNewUser] = useState({ username: '', email: '' });
+  const { users } = useSelector(usersSelector);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentUser, setCurrentUser] = useState({ _id: '', username: '', email: '' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [collapsed, setCollapsed] = useState(false);
+  const pageSize = 5;
 
   useEffect(() => {
-    document.title = "welcome admin ";
-
+    document.title = "User Management - Admin";
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const handleDelete = (userId) => {
-    dispatch(deleteUser(userId));
-  };
-
   const handleUpdate = (user) => {
-    const userId = user._id || user.id;
-    setUserToUpdate({ ...user, id: userId });
-    setShowUpdateForm(true);
-  };
-  
-
-  const handleUpdateSubmit = (e) => {
-    e.preventDefault();
-    dispatch(updateUser({ id: userToUpdate._id, user: userToUpdate }));
-    setShowUpdateForm(false);
-    setUserToUpdate(null);
-  };
-  
-
-  const handleCreateUser = () => {
-    setShowCreateForm(true);
+    setCurrentUser(user);
+    setIsModalVisible(true);
   };
 
-  const handleCreateSubmit = (e) => {
-    e.preventDefault();
-    dispatch(createUser(newUser));
-    setShowCreateForm(false);
-    setNewUser({ username: '', email: '' });
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
-  if (loading) return <p>Loading users...</p>;
-  if (error) return <p>Error loading users: {error}</p>;
+  const handleDelete = (userId) => {
+    dispatch(deleteUser(userId))
+      .then(() => message.success('User deleted successfully'))
+      .catch(err => message.error('Failed to delete user'));
+  };
+
+  const onFinish = (values) => {
+    dispatch(updateUser({ id: currentUser._id, user: values }))
+      .then(() => {
+        message.success('User updated successfully');
+        setIsModalVisible(false);
+      })
+      .catch(err => message.error('Failed to update user'));
+  };
+
+  const handlePageChange = (page, pageSize) => {
+    setCurrentPage(page);
+  };
+
+  const columns = [
+    { title: 'ID', dataIndex: '_id', key: 'id' },
+    { title: 'Username', dataIndex: 'username', key: 'username' },
+    { title: 'Email', dataIndex: 'email', key: 'email' },
+    {
+      title: 'Role', 
+      dataIndex: 'role', 
+      key: 'role',
+      render: role => {
+        let color = 'green';
+        if (role === 'admin') {
+          color = 'blue';
+        } else if (role === 'seller') {
+          color = 'volcano'; 
+        }
+       return (
+          <Tag color={color} key={role}>
+            {role.toUpperCase()}
+          </Tag>
+        );
+      }
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <>
+          <Button onClick={() => handleUpdate(record)} type="default">Update</Button>
+          <Popconfirm
+            title="Are you sure delete this user?"
+            onConfirm={() => handleDelete(record._id)}
+            onCancel={() => console.log('Delete canceled')}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="danger" style={{ marginLeft: 8 }}>Delete</Button>
+          </Popconfirm>
+        </>
+      ),
+    }
+  ];
 
   return (
-    <div>
-      <h1>User Management</h1>
-      <button onClick={handleCreateUser}>Create User</button>
-      {showCreateForm && (
-        <div>
-          <h2>Create User</h2>
-          <form onSubmit={handleCreateSubmit}>
-            <label>
-              Username:
-              <input
-                type="text"
-                value={newUser.username}
-                onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-              />
-            </label>
-            <label>
-              Email:
-              <input
-                type="email"
-                value={newUser.email}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              />
-            </label>
-            <button type="submit">Create</button>
-            <button type="button" onClick={() => setShowCreateForm(false)}>Cancel</button>
-          </form>
-        </div>
-      )}
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id || user.id}>
-              <td>{user._id || user.id}</td>
-              <td>{user.username}</td>
-              <td>{user.email}</td>
-              <td>
-                <button onClick={() => handleDelete(user._id || user.id)}>Delete</button>
-                <button onClick={() => handleUpdate(user)}>Update</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {showUpdateForm && userToUpdate && (
-        <div>
-          <h2>Update User</h2>
-          <form onSubmit={handleUpdateSubmit}>
-            <label>
-              Username:
-              <input
-                type="text"
-                value={userToUpdate.username}
-                onChange={(e) => setUserToUpdate({ ...userToUpdate, username: e.target.value })}
-              />
-            </label>
-            <label>
-              Email:
-              <input
-                type="email"
-                value={userToUpdate.email}
-                onChange={(e) => setUserToUpdate({ ...userToUpdate, email: e.target.value })}
-              />
-            </label>
-            <button type="submit">Update</button>
-            <button type="button" onClick={() => setShowUpdateForm(false)}>Cancel</button>
-          </form>
-        </div>
-      )}
-    </div>
+    <Layout>
+      <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
+      <Layout>
+        <Content style={{ margin: '0 16px' }}>
+          <div style={{ padding: 24, minHeight: 360, background: '#fff' }}>
+            <Table dataSource={users} columns={columns} rowKey="_id" pagination={false} />
+            <Pagination
+              size="small"
+              total={users.length}
+              showSizeChanger
+              showQuick Jumper
+              onChange={handlePageChange}
+              current={currentPage}
+              pageSize={pageSize}
+            />
+            <Modal title="Update User"   open={isModalVisible} onCancel={handleCancel} footer={null}>
+              <Form layout="vertical" onFinish={onFinish} initialValues={currentUser}>
+                <Form.Item label="Username" name="username" rules={[{ required: true, message: 'Please input the username!' }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email', message: 'Please input a valid email!' }]}>
+                  <Input />
+                </Form.Item>
+                <Button type="primary" htmlType="submit">Update</Button>
+              </Form>
+            </Modal>
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>
+        </Footer>
+      </Layout>
+    </Layout>
   );
 };
 

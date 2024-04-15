@@ -79,7 +79,6 @@ const MoroccoMap = () => {
         <BaseLayer name="Esri Aerial" checked>
           <TileLayer
             url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-            attribution="Tiles &copy; Esri &mdash; Sources: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
           />
         </BaseLayer>
         <BaseLayer name="OpenStreetMap">
