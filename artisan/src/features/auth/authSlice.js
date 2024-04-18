@@ -43,7 +43,6 @@ export const authSlice = createSlice({
     isAuthenticated: false,
   },
   reducers: {
-    // Reducers...
     logout: (state) => {
       clearToken();
       clearUserRole();

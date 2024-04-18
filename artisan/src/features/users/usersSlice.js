@@ -6,6 +6,18 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   return response.data;
 });
 
+export const fetchSubscriptions = createAsyncThunk('users/fetchSubscriptions', async () => {
+  const response = await usersAPI.fetchSubscriptionsFromAPI();
+  return response.data.map(sub => ({
+    _id: sub._id,
+    status: sub.status,
+    plan:sub.plan,
+    sellerName: sub.sellerName,
+    startDate: sub.startDate,
+    endDate: sub.endDate
+  })); 
+});
+
 
 export const updateUser = createAsyncThunk('users/updateUser', async ({ id, user }) => {
   const response = await usersAPI.updateUserInAPI({ id, user });
@@ -56,7 +68,22 @@ const usersSlice = createSlice({
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
         state.users.push(action.payload);
+      })
+      .addCase(fetchSubscriptions.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchSubscriptions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.subscriptions = action.payload; // Assuming you want to store subscriptions in state
+      })
+      .addCase(fetchSubscriptions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
+      
+      
+      ;
+      
   },
 });
 

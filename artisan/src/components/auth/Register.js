@@ -24,19 +24,15 @@ const Register = () => {
       if (registerUser.fulfilled.match(resultAction)) {
         navigate('/login');
       } else {
-        // Check if the error is due to a duplicate username
         if (resultAction.error.code === 'E11000' && resultAction.error.keyPattern.username) {
-          // Display an error message to the user
           alert('Username already exists. Please choose a different username.');
         } else {
           console.error('Registration failed:', resultAction.error);
-          // Display a generic error message to the user
           alert('Registration failed. Please try again.');
         }
       }
     } catch (error) {
       console.error('Failed to register:', error);
-      // Display a generic error message to the user
       alert('Registration failed. Please try again.');
     }
   };

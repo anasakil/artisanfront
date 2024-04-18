@@ -1,16 +1,45 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Layout, Menu } from 'antd';
+import { UserOutlined, ShopOutlined, UploadOutlined ,BarChartOutlined} from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
-const Sidebar = () => {
+const { Sider } = Layout;
+
+const Sidebar = ({ collapsed, onCollapse }) => {
+  const items = [
+    {
+      key: '4',
+      icon: <BarChartOutlined />,
+      label: (<Link to="/AdminDashboard">Admin Dashboard</Link>),
+    },
+    {
+      key: '1',
+      icon: <UserOutlined />,
+      label: (<Link to="/admin/users">User Management</Link>),
+    },
+    {
+      key: '2',
+      icon: <ShopOutlined />,
+      label: (<Link to="/admin/categories">Category Management</Link>),
+    },
+    {
+      key: '3',
+      icon: <UploadOutlined />,
+      label: (<Link to="/admin/sellers">Seller Management</Link>),
+    },
+  ];
+
   return (
-    <div className="bg-gray-800 text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out">
-        <h1 className="text-3xl font-semibold text-center">Admin Panel</h1>
-        <nav>
-            <NavLink to="/adminDashboard" className={({ isActive }) => isActive ? "text-blue-500" : ""}>Dashboard</NavLink>
-            <NavLink to="/admin/users" className={({ isActive }) => isActive ? "text-blue-500" : ""}>User Management</NavLink>
-            <NavLink to="/admin/categories" className={({ isActive }) => isActive ? "text-blue-500" : ""}>Category Management</NavLink>
-        </nav>
-    </div>
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
+      breakpoint="lg"
+      collapsedWidth="0"
+    >
+      <div className="logo" />
+      <Menu theme="dark" mode="inline" items={items} /> 
+    </Sider>
   );
 };
 

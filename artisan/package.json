@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mui/icons-material": "^5.15.15",
+    "@mui/material": "^5.15.15",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@reduxjs/toolkit": "^2.2.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "antd": "^5.16.1",
     "axios": "^1.6.8",
     "esri-leaflet": "^3.0.12",
     "jwt-decode": "^4.0.0",
@@ -16,10 +20,13 @@
     "react-leaflet": "^4.2.1",
     "react-leaflet-choropleth": "^2.0.1",
     "react-redux": "^9.1.0",
+    "react-responsive": "^10.0.0",
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
     "react-table": "^7.8.0",
+    "recharts": "^2.12.5",
     "redux": "^5.0.1",
+    "styled-components": "^6.1.8",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
