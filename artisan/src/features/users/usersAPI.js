@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 const API_URL = 'http://localhost:3001/api/admin/users/';
-
+const SUBSCRIPTIONS_URL='http://localhost:3001/api/subscriptions/subscribe';
 export const fetchUsersFromAPI = async () => {
   const token = localStorage.getItem('token');
   return await axios.get(API_URL, {
@@ -39,3 +39,17 @@ export const createUserInAPI = async (newUser) => {
     },
   });
 };
+
+
+export const fetchSubscriptionsFromAPI = async () => {
+  const token = localStorage.getItem('token');
+  return await axios.get(SUBSCRIPTIONS_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+
+
+

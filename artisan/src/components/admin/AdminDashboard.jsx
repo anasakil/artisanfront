@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Card, Row, Col } from 'antd';
-import Sidebar from './Sidebar';
+import Sidebar from './Sidebar.js';
 import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import PageHeader from './Header.jsx';
 
 const { Content } = Layout;
 
@@ -40,11 +41,12 @@ const AdminDashboard = () => {
   return (
     <Layout>
       <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
-      <Layout style={{ marginLeft: 200 }}>
+      <Layout>
+      <PageHeader /> 
         <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
           <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
             <Row gutter={16}>
-              <Col span={12}>
+              <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                 <Card title="User Distribution" bordered={false}>
                   <PieChart width={400} height={300}>
                     <Pie
@@ -67,12 +69,12 @@ const AdminDashboard = () => {
                   </PieChart>
                 </Card>
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                 <Card title="Real-time Chat" bordered={false}>
                   <div>Chat interface would be here. Implement or integrate a chat solution based on project requirements.</div>
                 </Card>
               </Col>
-              <Col span={24}>
+              <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                 <Card title="Order Statistics - Daily" bordered={false}>
                   <BarChart width={730} height={250} data={orderData}>
                     <CartesianGrid strokeDasharray="3 3" />

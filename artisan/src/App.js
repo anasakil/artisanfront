@@ -9,6 +9,7 @@ import Register from './components/auth/Register';
 import MoroccoMap from './Map/MoroccoMap';
 import ProductsPage from './Map/productspage';
 import Home from './pages/Home';
+import SellerManagement from './components/admin/SellerManagement';
 // import Layout from './components/admin/Layout';
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/adminDashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/categories" element={<CategoryManagement />} />
+          <Route path="/admin/sellers" element={<SellerManagement />} />
         </Route>
         {/* </Route> */}
       </Routes>

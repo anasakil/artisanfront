@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchAllCategories, createNewCategory, updateExistingCategory, removeCategory } from '../../features/categories/categoriesSlice';
 import { Layout, Table, Button, Input, Modal, Form, message } from 'antd';
-import Sidebar from './Sidebar';
+import Sidebar from './Sidebar.js';
+import PageHeader from './Header.jsx';
 
 const { Content } = Layout;
 
@@ -48,6 +49,8 @@ const CategoryManagement = () => {
           setIsModalVisible(false);
           setEditCategoryId(null);
           setEditCategoryName('');
+          dispatch(fetchAllCategories());
+
         })
         .catch(error => {
           message.error('Failed to update category');
@@ -66,10 +69,13 @@ const CategoryManagement = () => {
         dispatch(removeCategory(categoryId))
           .then(() => {
             message.success('Category deleted successfully');
+            dispatch(fetchAllCategories());
+
           })
           .catch(error => {
             message.error('Failed to delete category');
           });
+
       }
     });
   };
@@ -94,9 +100,10 @@ const CategoryManagement = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}> 
-          <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
+      <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
 
-      <Layout style={{ minHeight: '100vh' }}> 
+      <Layout style={{ minHeight: '100vh' }}>
+       <PageHeader/>
         <Content style={{ margin: '24px 16px 0', overflow: 'initial', minHeight: '280px' }}>
           <div style={{ padding: 24, background: '#fff', minHeight: 'calc(100vh - 96px)' }}>
             <h2>Category Management</h2>

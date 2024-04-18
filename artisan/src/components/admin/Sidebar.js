@@ -36,10 +36,9 @@ const Sidebar = ({ collapsed, onCollapse }) => {
       onCollapse={onCollapse}
       breakpoint="lg"
       collapsedWidth="0"
-      onBreakpoint={broken => console.log('Sidebar collapsed:', broken)}
     >
       <div className="logo" />
-      <Menu theme="dark" mode="inline" items={items} /> {/* Use the items prop here */}
+      <Menu theme="dark" mode="inline" items={items} /> 
     </Sider>
   );
 };
