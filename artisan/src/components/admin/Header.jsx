@@ -22,7 +22,7 @@ const PageHeader = () => {
   return (
     <div className="bg-[#001529] flex justify-between items-center px-5 py-3 ">
       <div className="text-white">
-        <img src="https://your-logo-url.com/logo.png" alt="Logo" className="h-8" />
+        <img src="" alt="Logo" className="h-8" />
       </div>
       <Dropdown overlay={menu} trigger={['click']}>
         <Avatar icon={<UserOutlined />} className="cursor-pointer" />

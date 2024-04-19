@@ -8,17 +8,17 @@ import PageHeader from './Header';
 const { Content } = Layout;
 
 const columns = [
-  {
-    title: 'Subscription ID',
-    dataIndex: '_id',
-    key: '_id',
-    responsive: ['md'] // Display on medium and larger screens only
-  },
+  // {
+  //   title: 'Subscription ID',
+  //   dataIndex: '_id',
+  //   key: '_id',
+  //   responsive: ['md'] 
+  // },
   {
     title: 'Seller Name',
     dataIndex: 'sellerName',
     key: 'sellerName',
-    responsive: ['sm'] // Display on small and larger screens
+    responsive: ['sm'] 
   },
   {
     title: 'Plan',

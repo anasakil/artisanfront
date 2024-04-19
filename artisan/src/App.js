@@ -4,6 +4,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import Login from './components/auth/Login';
 import AdminDashboard from './components/admin/AdminDashboard';
 import UserManagement from './components/admin/UserManagement';
+import Dashboard from './components/seller/Dashboard';
 import CategoryManagement from './components/admin/CategoryManagement';
 import Register from './components/auth/Register';
 import MoroccoMap from './Map/MoroccoMap';
@@ -30,7 +31,9 @@ const App = () => {
           <Route path="/admin/categories" element={<CategoryManagement />} />
           <Route path="/admin/sellers" element={<SellerManagement />} />
         </Route>
-        {/* </Route> */}
+        <Route element={<ProtectedRoute allowedRoles={['seller']} />}>
+          <Route path="/sellerdashboard" element={<Dashboard />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

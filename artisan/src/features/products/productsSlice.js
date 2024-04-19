@@ -40,7 +40,7 @@ export const createProduct = createAsyncThunk(
 const initialState = {
     products: [],
     product: null,
-    status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
+    status: 'idle', 
     error: null
 };
 

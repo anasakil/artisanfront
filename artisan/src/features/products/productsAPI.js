@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/products'; // Modify this URL based on your actual API endpoint
+const API_URL = 'http://localhost:3001/api/products'; 
 
 export const fetchProductsByRegion = async (region) => {
     const response = await axios.get(`${API_URL}/${region}`);
@@ -18,6 +18,7 @@ export const createProduct = async (productData, token) => {
             Authorization: `Bearer ${token}`
         }
     };
+    console.log('Request Headers:', config.headers);
     const response = await axios.post(API_URL, productData, config);
     return response.data;
 };

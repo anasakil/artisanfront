@@ -25,7 +25,11 @@ const Login = () => {
         const { role } = resultAction.payload;
         if (role === 'admin') {
           navigate('/AdminDashboard');
-        } else {
+        }
+        else if  (role === 'seller') {
+          navigate('/sellerdashboard')
+         }
+         else {
           navigate('/user-dashboard');
         }
       } else {
