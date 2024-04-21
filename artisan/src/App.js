@@ -5,12 +5,14 @@ import Login from './components/auth/Login';
 import AdminDashboard from './components/admin/AdminDashboard';
 import UserManagement from './components/admin/UserManagement';
 import Dashboard from './components/seller/Dashboard';
+import Addproduct from './components/seller/AddProduct';
 import CategoryManagement from './components/admin/CategoryManagement';
 import Register from './components/auth/Register';
 import MoroccoMap from './Map/MoroccoMap';
 import ProductsPage from './Map/productspage';
 import Home from './pages/Home';
 import SellerManagement from './components/admin/SellerManagement';
+import OrdersTable from './components/seller/SellerOrders';
 // import Layout from './components/admin/Layout';
 
 const App = () => {
@@ -33,6 +35,8 @@ const App = () => {
         </Route>
         <Route element={<ProtectedRoute allowedRoles={['seller']} />}>
           <Route path="/sellerdashboard" element={<Dashboard />} />
+          <Route path="/sellerproduct" element={<Addproduct />} />
+          <Route path="/sellerorder" element={<OrdersTable />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { createProduct } from '../../features/products/productsSlice';
 
 const CreateProductPage = () => {
@@ -12,13 +12,13 @@ const CreateProductPage = () => {
   const [stock, setStock] = useState('');
 
   const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.auth);
+  const token = localStorage.getItem('token'); 
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const productData = { name, description, price, imageUrl, category, region, stock };
     dispatch(createProduct({ productData, token }));
-    // Reset form fields after successful submission
     setName('');
     setDescription('');
     setPrice('');
