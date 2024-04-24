@@ -1,51 +1,137 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Table, Button, Spin, Modal, message, Select, Tag } from 'antd';
+
 import { getSellerOrders, updateSellerOrder, deleteSellerOrder } from '../../features/orders/ordersSlice';
 
+const { Option } = Select;
+
 const OrdersTable = () => {
-    const { orders, status, error } = useSelector(state => state.orders);
     const dispatch = useDispatch();
-    const token = localStorage.getItem('token');
+    const { orders, status, error } = useSelector(state => state.orders);
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [currentOrder, setCurrentOrder] = useState(null);
+    const [newStatus, setNewStatus] = useState('');
 
     useEffect(() => {
         dispatch(getSellerOrders());
     }, [dispatch]);
 
-    const handleDelete = (orderId) => {
-        if (window.confirm('Are you sure you want to delete this order?')) {
-            dispatch(deleteSellerOrder({ orderId, token }));
-        }
+    if (error) {
+        message.error(`Error: ${error}`);
+    }
+
+    const showModal = (order) => {
+        setCurrentOrder(order);
+        setNewStatus(order.status);
+        setIsModalVisible(true);
     };
 
-    const handleUpdate = (orderId, status) => {
-        dispatch(updateSellerOrder({ orderId, status, token }));
+    const statusTagColors = {
+        placed: 'Peru',
+        shipped: 'geekblue',
+        delivered: 'green',
+        cancelled: 'red'
     };
+
+    const handleUpdate = async () => {
+        if (currentOrder) {
+            const token = localStorage.getItem('token');
+            await dispatch(updateSellerOrder({ orderId: currentOrder._id, status: newStatus, token }));
+            setIsModalVisible(false);
+        }
+        await dispatch(getSellerOrders());
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    const columns = [
+        {
+            title: 'ID',
+            dataIndex: '_id',
+            key: 'id',
+            responsive: ['md'] // Column visible only on medium and larger screens
+        },
+        {
+            title: 'Product Name',
+            dataIndex: 'products',
+            key: 'productName',
+            render: products => products[0]?.product.name || 'N/A'
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'products',
+            key: 'quantity',
+            render: products => products[0]?.quantity || 0
+        },
+        {
+            title: 'Price',
+            dataIndex: 'products',
+            key: 'price',
+            render: products => `$${products[0]?.product.price || 0}`
+        },
+        {
+            title: 'Image',
+            dataIndex: 'products',
+            key: 'image',
+            render: products => (
+                <img src={products[0]?.product.imageUrl} alt="product" style={{ width: 50, height: 50 }} />
+            )
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: status => <Tag color={statusTagColors[status]}>{status}</Tag>
+        },
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record) => (
+                <React.Fragment>
+                    <Button  className="bg-custom-brown text-white" onClick={() => showModal(record)} type="primary" style={{ marginRight: 8 }}>
+                        Update
+                    </Button>
+                    <Button onClick={() => dispatch(deleteSellerOrder({ orderId: record._id, token: localStorage.getItem('token') }))} type="danger">
+                        Delete
+                    </Button>
+                </React.Fragment>
+            ),
+            responsive: ['sm'] 
+        }
+    ];
+
+    const statusOptions = ['placed', 'shipped', 'delivered', 'cancelled'];
+
+    const safeData = Array.isArray(orders) ? orders : [];
 
     return (
         <div>
-            <h1>Orders</h1>
-            {status === 'loading' ? <p>Loading...</p> : error ? <p>{error}</p> :
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map(order => (
-                        <tr key={order._id}>
-                            <td>{order._id}</td>
-                            <td>{order.status}</td>
-                            <td>
-                                <button onClick={() => handleUpdate(order._id, 'Updated Status')}>Update Status</button>
-                                <button onClick={() => handleDelete(order._id)}>Delete</button>
-                            </td>
-                        </tr>
+            {status === 'loading' ? <Spin size="large" /> : (
+                <Table
+                    dataSource={safeData}
+                    columns={columns}
+                    rowKey={record => record._id}
+                    pagination={{ pageSize: 5, responsive: true }}
+                />
+            )}
+            <Modal
+                title="Update Order Status"
+                visible={isModalVisible}
+                onOk={handleUpdate}
+                onCancel={handleCancel}
+                okText="Update"
+                cancelText="Cancel"
+            >
+                <Select defaultValue={newStatus} style={{ width: '100%' }} onChange={setNewStatus}>
+                    {statusOptions.map(status => (
+                        <Option key={status} value={status}>{status}</Option>
                     ))}
-                </tbody>
-            </table>}
+                </Select>
+            </Modal>
         </div>
     );
 };

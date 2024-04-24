@@ -4,7 +4,7 @@ import { fetchSellerOrders, updateOrder, deleteOrder } from './ordersAPI';
 export const getSellerOrders = createAsyncThunk(
     'orders/fetchSeller',
     async (_, { getState, rejectWithValue }) => {
-        const token = localStorage.getItem('token'); 
+        const token = localStorage.getItem('token');
 
         try {
             return await fetchSellerOrders(token);
@@ -48,9 +48,10 @@ const ordersSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getSellerOrders.fulfilled, (state, action) => {
-                state.orders = action.payload;
+                state.orders = Array.isArray(action.payload.orders) ? action.payload.orders : [];
                 state.status = 'succeeded';
             })
+
             .addCase(updateSellerOrder.fulfilled, (state, action) => {
                 const index = state.orders.findIndex(order => order._id === action.payload._id);
                 if (index !== -1) {

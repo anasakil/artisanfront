@@ -1,111 +1,152 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { createProduct } from '../../features/products/productsSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchSellerProducts, deleteProduct } from '../../features/products/productsSlice';
+import UpdateProductForm from './UpdateProductForm';
+import { SearchOutlined } from '@ant-design/icons'; 
 
-const CreateProductPage = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [category, setCategory] = useState('');
-  const [region, setRegion] = useState('');
-  const [stock, setStock] = useState('');
-  const dispatch = useDispatch();
+import { Table, Button, Modal, Popconfirm, message, Input } from 'antd';
+import DashboardStatsGrid from './DashboardCard';
+import TransactionChart from './TransactionChart';
+import BuyerProfilePieChart from './BuyerProfilePieChart';
 
-  const token = localStorage.getItem('token');
+const ProductsTable = () => {
+    const dispatch = useDispatch();
+    const products = useSelector(state => state.products.products); 
+    const [currentProduct, setCurrentProduct] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const token = localStorage.getItem('token'); 
 
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = "https://widget.cloudinary.com/v2.0/global/all.js";
-    script.async = true;
+    useEffect(() => {
+        dispatch(fetchSellerProducts()); 
+    }, [dispatch]); 
 
-    script.onload = () => {
-      if (typeof window.cloudinary === 'undefined') {
-        console.log('Cloudinary widget failed to load');
-      } else {
-        console.log('Cloudinary widget loaded successfully');
-      }
+
+    const handleDelete = (productId) => {
+        dispatch(deleteProduct({ productId, token }))
+            .then(() => {
+                message.success('Product deleted successfully');
+                dispatch(fetchSellerProducts());
+            })
+            .catch(error => {
+                message.error('Failed to delete product');
+                console.error('Error deleting product:', error);
+            });
     };
 
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
+    const openUpdateModal = (product) => {
+        setCurrentProduct(product);
+        setIsModalVisible(true);
     };
-  }, []);
 
-  const uploadImage = () => {
-    if (!window.cloudinary) {
-      console.error('Cloudinary widget is not loaded yet!');
-      return;
-    }
+    const closeUpdateModal = () => {
+        setCurrentProduct(null);
+        setIsModalVisible(false);
+    };
 
-    const myWidget = window.cloudinary.createUploadWidget({
-      cloudName: 'dso0onust',
-      uploadPreset: 'ml_default'
-    }, (error, result) => {
-      if (!error && result && result.event === "success") {
-        setImageUrl(result.info.secure_url);
-      }
-    });
+    const columns = [
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                <div style={{ padding: 8 }}>
+                    <Input
+                        autoFocus
+                        placeholder="Type to search"
+                        value={selectedKeys[0]}
+                        onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                        onPressEnter={() => confirm()}
+                        style={{ width: 188, marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        type="primary"
+                        onClick={() => confirm()}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 90, marginRight: 8 }}
+                    >
+                        Search
+                    </Button>
+                    <Button onClick={() => clearFilters()} size="small" style={{ width: 90 }}>
+                        Reset
+                    </Button>
+                </div>
+            ),
+            onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+            sorter: (a, b) => a.price - b.price,
+            render: price => `${price}$`,
+        },
+        {
+            title: 'Image',
+            dataIndex: 'imageUrl',
+            key: 'imageUrl',
+            render: imageUrl => <img src={imageUrl} alt="product" style={{ width: '100px', height: 'auto' }} />,
+        },
+        {
+            title: 'Stock',
+            dataIndex: 'stock',
+            key: 'stock',
+        },
+        {
+            title: 'Region',
+            dataIndex: 'region',
+            key: 'region',
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+        },
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record) => (
+                <span>
+                    <Button   className="bg-custom-brown text-white" onClick={() => openUpdateModal(record)}>Update</Button>
+                    <Popconfirm
+                        title="Are you sure you want to delete this product?"
+                        onConfirm={() => handleDelete(record._id)}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button type="danger">Delete</Button>
+                    </Popconfirm>
+                </span>
+            ),
+        },
+    ];
 
-    myWidget.open();
-  };
+    return (
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const productData = { name, description, price, imageUrl, category, region, stock };
-    dispatch(createProduct({ productData, token }));
-    setName('');
-    setDescription('');
-    setPrice('');
-    setImageUrl('');
-    setCategory('');
-    setRegion('');
-    setStock('');
-  };
-
-  return (
-    <div>
-      <h2>Create New Product</h2>
-      <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="name">Name:</label>
-          <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+            <DashboardStatsGrid />
+            <div className="flex flex-row gap-4 w-full">
+        <TransactionChart />
+        <BuyerProfilePieChart />
+      </div>
+            <h1>My Products</h1>
+            <Table 
+                dataSource={products} 
+                columns={columns} 
+                rowKey="_id" 
+                pagination={{ pageSize: 10 }}
+                responsive={['lg', 'md', 'sm', 'xs']}
+            />
+            <Modal
+                title="Update Product"
+                visible={isModalVisible}
+                onCancel={closeUpdateModal}
+                footer={null}
+            >
+                {currentProduct && <UpdateProductForm product={currentProduct} closeForm={closeUpdateModal} />}
+            </Modal>
         </div>
-        <div>
-          <label htmlFor="description">Description:</label>
-          <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
-        </div>
-        <div>
-          <label htmlFor="price">Price:</label>
-          <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required />
-        </div>
-        <div>
-          <label htmlFor="imageUrl">Image:</label>
-          <button type="button" onClick={uploadImage}>Upload Image</button>
-          {imageUrl && (
-            <div>
-              <img src={imageUrl} alt="Product" style={{ width: '100px', height: 'auto' }} />
-            </div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="category">Category:</label>
-          <input type="text" id="category" value={category} onChange={(e) => setCategory(e.target.value)} required />
-        </div>
-        <div>
-          <label htmlFor="region">Region:</label>
-          <input type="text" id="region" value={region} onChange={(e) => setRegion(e.target.value)} required />
-        </div>
-        <div>
-          <label htmlFor="stock">Stock:</label>
-          <input type="number" id="stock" value={stock} onChange={(e) => setStock(e.target.value)} required />
-        </div>
-        <button type="submit">Create Product</button>
-      </form>
-    </div>
-  );
+    );
 };
 
-export default CreateProductPage;
+export default ProductsTable;
