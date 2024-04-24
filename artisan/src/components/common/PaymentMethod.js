@@ -3,6 +3,7 @@ import { LiaCcMastercard } from "react-icons/lia";
 
 const PaymentMethods = () => {
   const [methods, setMethods] = useState([]);
+  const [savedMessage, setSavedMessage] = useState("");
 
   const addMethod = () => {
     setMethods([...methods, {}]);
@@ -10,6 +11,11 @@ const PaymentMethods = () => {
 
   const removeMethod = (index) => {
     setMethods(methods.filter((_, i) => i !== index));
+  };
+
+  const saveMethod = (index) => {
+   
+    setSavedMessage(`Card ${index + 1} saved successfully.`);
   };
 
   return (
@@ -27,7 +33,7 @@ const PaymentMethods = () => {
             </div>
             <div className="w-full sm:w-auto mb-2 sm:mr-2">
               <label className="block mb-1 text-sm font-bold">Name on Card</label>
-              <input type="text" className="w-full sm:w-48 p-2 border rounded-full mt-2 sm:mt-0" placeholder="John Doe" />
+              <input type="text" className="w-full sm:w-48 p-2 border rounded-full mt-2 sm:mt-0" placeholder="Badr DR" />
             </div>
             <div className="w-full sm:w-auto mb-2 sm:mr-2">
               <label className="block mb-1 text-sm font-bold">CVC</label>
@@ -36,12 +42,15 @@ const PaymentMethods = () => {
             <div className="w-full sm:w-auto mb-2 sm:mr-2">
               <label className="block mb-1 text-sm font-bold">Expiry Date</label>
               <input type="text" className="w-full sm:w-48 p-2 border rounded-full mt-2 sm:mt-0" placeholder="October 2030" />
-              <button onClick={() => removeMethod(index)} className="bg-[#97644E] hover:bg-[#E4C59E] text-white font-bold py-2 px-4 mt-2 sm:mt-0 rounded ml-40">X</button>
+              <button onClick={() => removeMethod(index)} className="bg-[#97644E] hover:bg-[#E4C59E] text-white font-bold py-2 px-4 mt-2 sm:mt-0 rounded ml-8">X</button>
             </div>
           </div>
+          <button onClick={() => saveMethod(index)} className="bg-[#97644E] hover:bg-[#E4C59E] text-white font-bold py-2 px-4 mt-6 sm:mt-0 rounded ml-4 ">Save</button>
+
         </div>
       ))}
       <button onClick={addMethod} className="bg-[#97644E] hover:bg-[#E4C59E] text-white font-bold py-2 px-4 rounded">Add New Card</button>
+      {savedMessage && <p>{savedMessage}</p>}
     </div>
   );
 };
