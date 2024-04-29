@@ -6,7 +6,7 @@ const GoogleLoginButton = () => {
   };
 
   return (
-    <button onClick={handleLogin} className="bg-blue-500 text-white font-bold py-2 px-4 rounded">
+    <button onClick={handleLogin} className=" text-white font-bold py-2 px-4 rounded" style={{ color: '#97644e' }}>
       Login with Google
     </button>
   );
