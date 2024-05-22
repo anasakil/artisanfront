@@ -60,11 +60,19 @@ const AddProductModal = () => {
             form.resetFields();
             message.success('Product created successfully');
         } catch (error) {
-            message.error('Failed to create product');
+           
+            if (error.data && error.data.message) {
+                message.error(error.data.message);
+            } else if (error.message) {
+                message.error(error.message);  
+            } else {
+                message.error('Failed to create product'); 
+            }
         } finally {
             setLoading(false);
         }
     };
+    
 
     return (
         <Row justify="center">
@@ -99,7 +107,7 @@ const AddProductModal = () => {
                             <Input type="number" placeholder="Enter stock quantity" />
                         </Form.Item>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" loading={loading}>
+                            <Button  className="bg-custom-brown text-white" type="primary" htmlType="submit" loading={loading}>
                                 Create Product
                             </Button>
                         </Form.Item>

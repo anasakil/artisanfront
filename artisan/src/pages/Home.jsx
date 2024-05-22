@@ -1,20 +1,37 @@
-import React from 'react';
-import MoroccoMap from '../Map/MoroccoMap';
+// src/pages/Home.jsx
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts, selectAllProducts } from '../features/products/productsSlice';
+import ProductCard from './ProductCard';
+import Navbar from './Navbar';
+import Hero from './hero';
+import Category from './Category';
+import Cards from './cards';
 
-function Home() {
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-6xl p-4">
-        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-4 md:mb-0 w-full md:w-1/3 text-center md:text-left">
-          Home
-        </h1>
-        
-        <div className="w-full md:flex-grow bg-white shadow-lg rounded-lg overflow-hidden">
-          <MoroccoMap />
+const Home = () => {
+    const dispatch = useDispatch();
+    const products = useSelector(selectAllProducts);
+
+    useEffect(() => {
+        dispatch(fetchProducts());
+    }, [dispatch]);
+
+    return (
+        <>
+        <Nabvar/>
+        <Hero/>
+        <Category/>
+        <Cards/>
+        <div className="container mx-auto px-4">
+            <h1 className="text-3xl font-bold my-6">Home</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {products.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                ))}
+            </div>
         </div>
-      </div>
-    </div>
-  );
-}
+        </>
+    );
+};
 
 export default Home;

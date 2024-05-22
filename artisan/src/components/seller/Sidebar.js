@@ -11,8 +11,8 @@ const Sidebar = () => {
     { name: "Dashboard", link: "/sellerdashboard", icon: MdOutlineDashboard },
     { name: "Products", link: "/sellerdashboard/addproduct", icon:HiOutlineCube},
     { name: "Orders", link: "/sellerdashboard/orders", icon:HiOutlineShoppingCart},
-    { name: "Customers", link: "/", icon: AiOutlineUser, margin: true },
-    { name: "Payment", link: "/", icon: MdOutlinePayment  },
+    { name: "Profile", link: "/sellerdashboard/profile", icon: AiOutlineUser, margin: true },
+    { name: "subscribe", link: "/sellerdashboard/subscribe", icon: MdOutlinePayment  },
     { name: "Settings", link: "/", icon: RiSettings4Line },
     { name: "Support", link: "/", icon: HiOutlineCog, margin: true },
     { name: "Logout", link: "/", icon: MdLogout },
@@ -22,7 +22,7 @@ const Sidebar = () => {
     <section className="flex gap-6">
       <div
         className={`bg-[#97644E] min-h-screen ${
-          open ? "w-72" : "w-16"
+          open ? "w-60" : "w-16"
         } duration-500 text-gray-100 px-4`}
       >
         <div className="py-3 flex justify-end">

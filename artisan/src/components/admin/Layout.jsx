@@ -1,23 +1,18 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import Header from './Header';
 
-const { Header, Content, Sider } = Layout;
-
-const AdminLayout = ({ children }) => {
+export default function Layout1() {
   return (
-    <Layout hasSider>
-      <Sider width={200} style={{ background: '#fff' }}>
-        <Sidebar />
-      </Sider>
-      <Layout style={{ paddingLeft: '200px' }}>
-        <Header style={{ background: '#fff', padding: '0 20px' }}>Admin Panel</Header>
-        <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-          {children}
-        </Content>
-      </Layout>
-    </Layout>
+    <div className="bg-neutral-100 h-screen w-screen overflow-hidden flex flex-row">
+      <Sidebar />
+      <div className="flex flex-col flex-1">
+        <Header />
+        <div className="flex-1 p-4 min-h-0 overflow-auto">
+          <Outlet />
+        </div>
+      </div>
+    </div>
   );
-};
-
-export default AdminLayout;
+}

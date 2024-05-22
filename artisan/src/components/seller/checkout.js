@@ -8,7 +8,7 @@ const CheckoutForm = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async () => {
-        const token = localStorage.getItem('token'); // Retrieve the token from local storage
+        const token = localStorage.getItem('token');
 
         if (!token) {
             message.error('You are not authorized. Please log in.');
@@ -20,7 +20,7 @@ const CheckoutForm = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+                    'Authorization': `Bearer ${token}` 
                 },
                 body: JSON.stringify({ email, paymentMethodId }),
             });
@@ -64,7 +64,7 @@ const CheckoutForm = () => {
                 />
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit">
+                <Button  className="bg-custom-brown text-white" type="primary" htmlType="submit">
                     Create Subscription
                 </Button>
             </Form.Item>
