@@ -18,7 +18,7 @@ const Home = () => {
 
     return (
         <>
-        <Nabvar/>
+        <Navbar />
         <Hero/>
         <Category/>
         <Cards/>
